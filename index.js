@@ -70,5 +70,5 @@ app.post('/api/persons', (request, response) => {
 
 const port = process.env.PORT || 3001
 app.listen(port, () => {
-  console.log(`Server 3.10 running on port ${port}`)
+  console.log(`Server 3.11 running on port ${port}`)
 })
