@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
+const mongoose = require('mongoose')
+const Contact = require('./models/contact')
 app.use(express.json())
 app.use(cors())
 app.use(express.static('build'))
@@ -12,8 +15,9 @@ morgan.token('content', function (req, res) {
     return JSON.stringify(obj)
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content'))
+const url = process.env.MONGODB_URI
 
-let phonebook = [
+/*let phonebook = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -34,6 +38,10 @@ let phonebook = [
       "name": "Mary Poppendieck", 
       "number": "39-23-6423122"
     }
+]*/
+
+let phonebook = [
+
 ]
 
 app.get('/info', (request, response) => {
@@ -41,7 +49,10 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(phonebook)
+    //response.json(phonebook)
+    Contact.find({}).then(persons => {
+      response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -58,14 +69,22 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-    const id = Math.floor(Math.random()*1000000)
-    const person = request.body
-    person.id = id
-    if(!person.name) return response.status(400).json({error: 'name missing'})
-    if(!person.number) return response.status(400).json({error: 'number missing'})
-    if(phonebook.some(p => p.name === person.name)) return response.status(400).json({error: 'person already exists'})
-    phonebook = phonebook.concat(person)
-    response.json(person)
+    //const id = Math.floor(Math.random()*1000000)
+    const body = request.body
+    //body.id = id
+    const person = new Contact({
+      //id: id,
+      name: body.name,
+      number: body.number
+    })
+    person.save().then(savedPerson => {
+      response.json(savedPerson)
+    })
+    /*if(!body.name) return response.status(400).json({error: 'name missing'})
+    if(!body.number) return response.status(400).json({error: 'number missing'})
+    if(phonebook.some(p => p.name === body.name)) return response.status(400).json({error: 'person already exists'})
+    phonebook = phonebook.concat(body)
+    response.json(body)*/
 })
 
 const port = process.env.PORT || 3001
