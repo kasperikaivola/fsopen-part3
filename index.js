@@ -102,7 +102,7 @@ const errorHandler = (error,request,response,next) => { //error handler middlewa
   next(error)
 }
 
-app.use(errorHandler)
+app.use(errorHandler) //error handler should be taken into use last
 const port = process.env.PORT || 3001
 app.listen(port, () => {
   console.log(`Server 3.18 running on port ${port}`)
