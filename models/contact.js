@@ -12,8 +12,19 @@ mongoose.connect(url)
 
 const contactSchema = new mongoose.Schema({
   //id: Number,
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: 3
+  },
+  number: {
+    type: String,
+    minLength: 8,
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d+$/.test(v) //|| /^\d{2}-\d+$/.test(v)
+      }
+    }
+  },
 })
 
 contactSchema.set('toJSON', {
