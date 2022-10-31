@@ -11,43 +11,43 @@ const url = `mongodb+srv://fsopen:${password}@cluster0.liih1bl.mongodb.net/testA
 
 
 const contactSchema = new mongoose.Schema({
-    id: Number,
-    name: String,
-    number: String,
-  })
-  
+  id: Number,
+  name: String,
+  number: String,
+})
+
 const Contact = mongoose.model('Contact', contactSchema)
 
 if(process.argv.length === 5) {
 
-    mongoose
+  mongoose
     .connect(url)
-    .then((result) => {
-        console.log('connected')
-        const contact = new Contact({
-            id: Math.floor(Math.random()*1000000),
-            name: process.argv[3],
-            number: process.argv[4],
-        })
+    .then(() => {
+      console.log('connected')
+      const contact = new Contact({
+        id: Math.floor(Math.random()*1000000),
+        name: process.argv[3],
+        number: process.argv[4],
+      })
 
-        return contact.save()
+      return contact.save()
     })
     .then(() => {
-        console.log('Contact saved!')
-        return mongoose.connection.close()
+      console.log('Contact saved!')
+      return mongoose.connection.close()
     })
     .catch((err) => console.log(err))
 }
 
 else if(process.argv.length === 3) {
-    mongoose.connect(url)
-    .then((result) => {
-        console.log('Phonebook:')
-        Contact.find().then(result => {
-            result.forEach(contact => {
-                console.log(contact.name, contact.number)
-            })
-            mongoose.connection.close()
+  mongoose.connect(url)
+    .then(() => {
+      console.log('Phonebook:')
+      Contact.find().then(result => {
+        result.forEach(contact => {
+          console.log(contact.name, contact.number)
         })
+        mongoose.connection.close()
+      })
     })
 }
